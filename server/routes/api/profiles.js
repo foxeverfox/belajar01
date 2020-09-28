@@ -103,22 +103,78 @@ router.post('/' ,auth, [auth ,[
       
       
 router.get('/' , async ( req , res ) => {
-
     try {
         const profiles = await Profile.find().populate('user',['name','avatar'])
         res.json(profiles)
         
     } catch (error) {
+        console.error(error.message)
+        
+    }   
+})      
+
+router.get('/user/:user_id' , async ( req , res ) => {
+    try {
+        const profile = await Profile.findOne({user:req.params.user_id}).populate('user',['name','avatar'])
+        if(!profile)       return res.status(400).json({msg:'Error!! Profile not found '})
+        
+
+
+        res.json(profiles)
+        
+    } catch (error) {
+        console.error(error.message)
+
+        if( error.kind =="ObjectId"){
+            return res.status(400).json({msg:'Parameter not Object ID'})
+        }
+        res.status(500).send("Server Error")
+    }   
+})      
+
+
+router.delete('/' ,auth ,  async ( req , res ) => {
+    try {
+        await Profile.findOneAndRemove({user:req.user.id})
+
+        await User.findOneAndRemove({_id:req.user.id})
+        
+        res.json({msg:'User Removed'})
+    } catch (error) {
+        console.error(error.message)
+
+        if( error.kind =="ObjectId"){
+            return res.status(400).json({msg:'Parameter not Object ID'})
+        }
+        res.status(500).json({msg:error.message})
+    }   
+})      
+
+
+router.put("/experience",[auth, [ 
+    check('title',"Title is required").not().isEmpty() ,
+    check('company',"Company is required").not().isEmpty() ,
+    check('from',"From Date is required").not().isEmpty() ]
+]  , async ( req , res) => {
+    
+    const {title,company,location,from,to ,current ,description} = req.body
+    const newExp = {
+        title, company,location , from ,to , current, description 
+    }
+    try {
+        const profile = await Profile.findOne({user: req.user.id})
+
+        profile.experience.unshift(newExp);
+        await profile.save()
+        res.json(profile)
+        
+    } catch (error) {
+        console.error(error.message)
+        res.status(500).send( "Error Server")
         
     }
-    
-}
 
-
-
-)      
-
-
+})
 
 
 
