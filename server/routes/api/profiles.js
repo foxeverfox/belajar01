@@ -177,6 +177,9 @@ router.put("/experience",[auth, [
 })
 
 
+router.put("/experience",[auth, [ ]] , asyncy ( req , res) => {
+    
+}
 
 
 
