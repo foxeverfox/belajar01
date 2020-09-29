@@ -238,20 +238,25 @@ router.delete("/experience/:exp_id", auth, async (req, res) => {
 //@route    menambahkan  experience ke profile
 //@access   Private
 
-router.put("/experience", [auth, [
-    check('title', "Title is required").not().isEmpty(),
-    check('company', "Company is required").not().isEmpty(),
-    check('from', "From Date is required").not().isEmpty()]
+router.put("/education", [auth, [
+    check('school', "School is required").not().isEmpty(),
+    check('degree', "Degree is required").not().isEmpty(),
+    check('from', "From Date is required").not().isEmpty() ,
+    check('to', "To Date is required").not().isEmpty() 
+ ]
 ], async (req, res) => {
 
-    const { title, company, location, from, to, current, description } = req.body
-    const newExp = {
-        title, company, location, from, to, current, description
+    const {school ,degree ,fieldofstudy ,from ,to,current,description } = req.body
+
+    
+
+    const newEd = {
+        school ,degree ,fieldofstudy ,from ,to,current,description 
     }
     try {
         const profile = await Profile.findOne({ user: req.user.id })
 
-        profile.experience.unshift(newExp);
+        profile.education.unshift(newEd);
         await profile.save()
         res.json(profile)
 
@@ -265,16 +270,16 @@ router.put("/experience", [auth, [
 
 
 
-//@route    DELETE api/profile/experience
+//@route    DELETE api/profile/education
 //@route    delete spesifc experience from profile
 //@access   Private
 
 
-router.delete("/experience/:exp_id", auth, async (req, res) => {
+router.delete("/education/:exp_id", auth, async (req, res) => {
 
     try {
         const profile = await Profile.findOne({ user: req.user.id })
-        const indexToRemove = profile.experience.map(item => item.id).indexOf(req.params.exp_id)
+        const indexToRemove = profile.education.map(item => item.id).indexOf(req.params.exp_id)
 
         profile.experience.splice(indexToRemove, 1)
         await profile.save()
@@ -286,9 +291,6 @@ router.delete("/experience/:exp_id", auth, async (req, res) => {
 
     }
 })
-
-
-
 
 
 
