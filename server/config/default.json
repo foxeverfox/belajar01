@@ -1,5 +1,5 @@
 {
- "mongoUri":"mongodb+srv://christian:dianmenu230408@cluster.ccb1y.mongodb.net/pratama?retryWrites=true&w=majority" ,
+ "mongoUri":"" ,
  "jwtSecret":"myjwtsecret"
 
 }
